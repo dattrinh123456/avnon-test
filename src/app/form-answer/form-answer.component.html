@@ -1,0 +1,13 @@
+<ng-container *ngFor="let form of formData">
+  <p style="font-weight: bold">{{ form.questionName }}</p>
+  <div *ngIf="form.questionType == 0; else template2">
+    {{ form.value }}
+  </div>
+
+  <ng-template #template2>
+    <div *ngFor="let item of form.options">
+      {{ item.value }}
+    </div>
+  </ng-template>
+</ng-container>
+<button pButton (click)="backtoForm()">Back to Forms Builder</button>

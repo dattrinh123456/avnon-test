@@ -1,0 +1,94 @@
+<ng-container *ngIf="isShowForm">
+  <div>
+    <div *ngFor="let f of form?.controls; index as i">
+      <ng-container [formGroup]="f" class="form-container">
+        <p style="font-weight: bold">
+          {{ f.get("questionName")?.value }}
+          {{ f.get("isRequire")?.value ? "*" : "" }}
+        </p>
+        <ng-container *ngIf="f.get('questionType')?.value == 1; else template2">
+          <p-multiSelect
+            [options]="f.get('optionValues')?.value"
+            formControlName="options"
+            optionLabel="label"
+          ></p-multiSelect>
+
+          <div *ngIf="f.get('isOther')?.value">
+            <input
+              type="text"
+              pInputText
+              formControlName="other"
+              placeholder="Add Other"
+            />
+          </div>
+        </ng-container>
+        <ng-template #template2>
+          <textarea formControlName="value"></textarea>
+        </ng-template>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>
+
+<div class="flex align-items-center gap-1 mt-1">
+  <button pButton (click)="openDialog()" *ngIf="!isShowQuestion">
+    Add Question
+  </button>
+  <button pButton *ngIf="isShowForm" (click)="reviewData()">
+    Review my answers
+  </button>
+</div>
+
+<p-dialog
+  header="Select The Qusetion"
+  [(visible)]="isShowQuestion"
+  [style]="{ width: '30vw', height: 'auto' }"
+>
+  <div class="dialog-container" [formGroup]="formBuilder">
+    <p>Add a New Question</p>
+    <p-dropdown
+      [options]="dropdownOptions"
+      formControlName="questionType"
+      optionLabel="label"
+    ></p-dropdown>
+    <input
+      type="text"
+      pInputText
+      formControlName="questionName"
+      placeholder="Type question here"
+    />
+    <ng-container *ngIf="formBuilder.get('questionType')?.value?.value == 1">
+      <div *ngFor="let option of options?.controls; index as i">
+        <input
+          type="text"
+          pInputText
+          [formControl]="options.controls[i]"
+          placeholder="Add Answer Option"
+        />
+      </div>
+
+      <p
+        (click)="options.controls.length < 5 && addOption()"
+        style="cursor: pointer"
+      >
+        + Add another answer
+      </p>
+    </ng-container>
+
+    <div
+      class="flex align-items-center gap-1"
+      *ngIf="formBuilder.get('questionType')?.value?.value == 1"
+    >
+      <p-checkbox formControlName="isOther" value="true"></p-checkbox>
+      <label>Allow user to specify their own answer</label>
+    </div>
+
+    <div class="flex align-items-center gap-1">
+      <p-checkbox formControlName="isRequire" value="true"></p-checkbox>
+      <label>This field is required</label>
+    </div>
+    <div class="flex align-items-center justify-content-end">
+      <button pButton (click)="submit()">Submit</button>
+    </div>
+  </div>
+</p-dialog>

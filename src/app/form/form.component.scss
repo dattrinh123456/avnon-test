@@ -1,0 +1,12 @@
+.dialog-container, .form-container{
+  display: grid;
+  gap: 1em;
+  width: 23em;
+}
+.p-multiselect{
+  width: 100%;
+}
+
+::ng-deep .p-dropdown , .p-inputtext, .p-multiselect{
+  width: 100%!important;
+}
